@@ -14,7 +14,7 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     if (inventory[1] == 5) {
-        speed += 25
+        vitality += 1
         inventory.removeAt(1)
     } else if (inventory[1] == 3) {
         wackman.startEffect(effects.fire, 1000)
@@ -43,7 +43,7 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         maxenem += 1
         inventory.removeAt(1)
     } else if (inventory[1] == 4) {
-        info.changeLifeBy(1)
+        info.changeLifeBy(randint(1, vitality))
         inventory.removeAt(1)
     } else if (inventory[1] == 0) {
         wackman.startEffect(effects.fountain, 1000)
@@ -93,7 +93,7 @@ sprites.onOverlap(SpriteKind.fire, SpriteKind.Enemy, function (sprite, otherSpri
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (inventory[0] == 5) {
-        speed += 25
+        vitality += 1
         inventory.removeAt(0)
     } else if (inventory[0] == 3) {
         wackman.startEffect(effects.fire, 1000)
@@ -119,7 +119,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
                 `, wackman, randint(-30, 30), randint(-30, 30))
             fire.setKind(SpriteKind.fire)
         }
-        maxenem += 1
+        maxenem += randint(1, vitality)
         inventory.removeAt(0)
     } else if (inventory[0] == 4) {
         info.changeLifeBy(1)
@@ -171,6 +171,8 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 function DisplayInv () {
+    item1.setImage(item_sprite[inventory[0]])
+    item2.setImage(item_sprite[inventory[1]])
     if (inventory.length == 0) {
         item1.setImage(img`
             . . . . . . . . . . . . . . . . 
@@ -227,9 +229,6 @@ function DisplayInv () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             `)
-    } else {
-        item1.setImage(item_sprite[inventory[0]])
-        item2.setImage(item_sprite[inventory[1]])
     }
 }
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
@@ -326,7 +325,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLight4, function (sp
     } else if (Math.percentChance(10)) {
         info.changeLifeBy(-1)
     } else {
-        speed += -10
+        vitality += -0.5
     }
     tiles.setTileAt(location, sprites.dungeon.floorLight3)
     traps_hit += 1
@@ -346,6 +345,7 @@ let item_sprite: Image[] = []
 let item2: Sprite = null
 let item1: Sprite = null
 let maxenem = 0
+let vitality = 0
 let wackman: Sprite = null
 let inventory: number[] = []
 let player_animations: Image[][] = []
@@ -369,8 +369,8 @@ assets.animation`wacky boy DEAD`
 ]
 inventory = [3]
 wackman = sprites.create(assets.image`wacky boy item`, SpriteKind.Player)
-let speed = 50
-controller.moveSprite(wackman, speed, speed)
+vitality = 1
+controller.moveSprite(wackman, 50, 50)
 scene.cameraFollowSprite(wackman)
 info.setLife(3)
 new_room(5)
