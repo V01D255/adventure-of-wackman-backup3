@@ -5,6 +5,7 @@ namespace SpriteKind {
     export const misc = SpriteKind.create()
     export const shop = SpriteKind.create()
     export const youreawful = SpriteKind.create()
+    export const bomb = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -19,7 +20,11 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.shop, function (sprite, otherSpr
     RandomGoodbyes = ["give haerts for the best EVER", "always welcome back", "give more hearts for good luck everytime"]
     game.showLongText(RandomGreetings._pickRandom(), DialogLayout.Bottom)
     if (game.ask("Give Shawppa 1 heart?")) {
-        temp = randint(0, 5)
+        if (Math.percentChance(luck * 5)) {
+            temp = randint(6, 8)
+        } else {
+            temp = randint(0, 5)
+        }
         info.changeLifeBy(-1)
         for (let index = 0; index < 4; index++) {
             inventory.unshift(temp)
@@ -101,6 +106,16 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         inventory.removeAt(1)
         sprites.destroyAllSpritesOfKind(SpriteKind.Enemy, effects.ashes, 500)
         sprites.destroyAllSpritesOfKind(SpriteKind.shop, effects.ashes, 500)
+    } else if (inventory[1] == 7) {
+        for (let index = 0; index < 20; index++) {
+            fire = sprites.createProjectileFromSprite(assets.image`blueflames`, wackman, randint(-50, 50), randint(-50, 50))
+            fire.setKind(SpriteKind.fire)
+        }
+        inventory.removeAt(1)
+    } else if (inventory[1] == 8) {
+        inventory.removeAt(1)
+        landmine = sprites.create(assets.image`napalm_bomb`, SpriteKind.bomb)
+        landmine.setPosition(wackman.x, wackman.y)
     } else {
         inventory.removeAt(1)
     }
@@ -142,10 +157,10 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
                 `, wackman, randint(-30, 30), randint(-30, 30))
             fire.setKind(SpriteKind.fire)
         }
-        maxenem += randint(1, vitality)
+        maxenem += 1
         inventory.removeAt(0)
     } else if (inventory[0] == 4) {
-        info.changeLifeBy(1)
+        info.changeLifeBy(randint(1, vitality))
         inventory.removeAt(0)
     } else if (inventory[0] == 0) {
         wackman.startEffect(effects.fountain, 1000)
@@ -183,10 +198,44 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         inventory.removeAt(0)
         sprites.destroyAllSpritesOfKind(SpriteKind.Enemy, effects.ashes, 500)
         sprites.destroyAllSpritesOfKind(SpriteKind.shop, effects.ashes, 500)
+    } else if (inventory[0] == 7) {
+        for (let index = 0; index < 20; index++) {
+            fire = sprites.createProjectileFromSprite(assets.image`blueflames`, wackman, randint(-50, 50), randint(-50, 50))
+            fire.setKind(SpriteKind.fire)
+        }
+        inventory.removeAt(0)
+    } else if (inventory[0] == 8) {
+        inventory.removeAt(0)
+        landmine = sprites.create(assets.image`napalm_bomb`, SpriteKind.bomb)
+        landmine.setPosition(wackman.x, wackman.y)
     } else {
         inventory.removeAt(0)
     }
     DisplayInv()
+})
+sprites.onOverlap(SpriteKind.Enemy, SpriteKind.bomb, function (sprite, otherSprite) {
+    for (let index = 0; index < 10; index++) {
+        fire = sprites.createProjectileFromSprite(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . 4 4 . . . . . . . 
+            . . . . . . 4 5 5 4 . . . . . . 
+            . . . . . . 2 5 5 2 . . . . . . 
+            . . . . . . . 2 2 . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, wackman, randint(-35, 35), randint(-35, 35))
+        ice.setKind(SpriteKind.fire)
+    }
+    otherSprite.destroy()
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -391,10 +440,11 @@ let item_bonus = 0
 let deathorb: Sprite = null
 let enemies_killed = 0
 let item_pickup: Sprite = null
+let landmine: Sprite = null
 let ice: Sprite = null
 let fire: Sprite = null
-let luck = 0
 let temp = 0
+let luck = 0
 let RandomGoodbyes: string[] = []
 let RandomGreetings: string[] = []
 let item_sprite: Image[] = []
@@ -409,14 +459,14 @@ let areas: tiles.TileMapData[] = []
 areas = [
 tilemap`room1`,
 tilemap`level3`,
-tilemap`die1`,
+tilemap`level16`,
 tilemap`level4`,
 tilemap`level7`,
 tilemap`level10`,
 tilemap`level12`,
 tilemap`ruins_garden1`,
 tilemap`garden_1`,
-tilemap`level16`
+tilemap`die1`
 ]
 player_animations = [
 assets.animation`wacky boy forward`,
@@ -487,7 +537,9 @@ assets.image`shield`,
 assets.image`myImage0`,
 assets.image`myImage4`,
 assets.image`myImage1`,
-assets.image`death_orb`
+assets.image`death_orb`,
+assets.image`blueflames`,
+assets.image`napalm_bomb`
 ]
 let item_ID = [
 0,
@@ -496,6 +548,8 @@ let item_ID = [
 3,
 4,
 5,
-6
+6,
+7,
+8
 ]
 DisplayInv()

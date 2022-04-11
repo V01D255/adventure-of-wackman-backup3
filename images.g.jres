@@ -74,6 +74,21 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "death_orb"
     },
+    "image18": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAAJiJAAAAAAAAmIkAAAAAAACACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "blueflare_bomb"
+    },
+    "image16": {
+        "data": "hwQJAAkAAAAAAAAAAAAAAAAACQAAAAAAAGBhAAAAAAAAlpEGAAAAAJARGZEAAAAAAJaRBgAAAAAAYGEAAAAAAAAACQAAAAAAAAAAAAAAAAA=",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "blueflames"
+    },
+    "image17": {
+        "data": "hwQQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgDgAAAAAAAC7iAAAAAAAALuIAAAAAAADgDgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "napalm_bomb"
+    },
     "anim5": {
         "namespace": "myAnimations",
         "id": "anim5",
