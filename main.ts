@@ -3,6 +3,7 @@ namespace SpriteKind {
     export const fire = SpriteKind.create()
     export const ice = SpriteKind.create()
     export const misc = SpriteKind.create()
+    export const shop = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -11,6 +12,23 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     350,
     false
     )
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.shop, function (sprite, otherSprite) {
+    RandomGreetings = ["hey yeah yeah welcome to shawppa shawp", "yeah give me heart", "yyeaahhh"]
+    RandomGoodbyes = ["give haerts for the best EVER", "always welcome back", "give more hearts for good luck everytime"]
+    game.showLongText(RandomGreetings._pickRandom(), DialogLayout.Bottom)
+    if (game.ask("Give Shawppa 1 heart?")) {
+        temp = randint(0, 5)
+        info.changeLifeBy(-1)
+        for (let index = 0; index < 4; index++) {
+            inventory.unshift(temp)
+        }
+    } else {
+        game.showLongText("please my rent is due tomorrow", DialogLayout.Bottom)
+    }
+    game.showLongText(RandomGoodbyes._pickRandom(), DialogLayout.Bottom)
+    DisplayInv()
+    otherSprite.destroy(effects.smiles, 1000)
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     if (inventory[1] == 5) {
@@ -231,7 +249,7 @@ function DisplayInv () {
 }
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
     tiles.setTileAt(location, sprites.dungeon.floorLight0)
-    inventory.push(item_ID._pickRandom())
+    inventory.push(randint(0, 5))
     DisplayInv()
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -293,6 +311,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSpr
 })
 function new_room (EnemiesNum: number) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
+    sprites.destroyAllSpritesOfKind(SpriteKind.shop)
     tiles.setCurrentTilemap(areas._pickRandom())
     tiles.placeOnRandomTile(wackman, sprites.dungeon.collectibleInsignia)
     for (let index = 0; index < EnemiesNum; index++) {
@@ -309,6 +328,10 @@ function new_room (EnemiesNum: number) {
     }
     for (let value of tiles.getTilesByType(assets.tile`enemy`)) {
         tiles.setTileAt(value, sprites.dungeon.floorLight0)
+    }
+    for (let value of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+        shawppa = sprites.create(assets.image`shopkeep_man`, SpriteKind.shop)
+        tiles.placeOnTile(shawppa, value)
     }
 }
 sprites.onOverlap(SpriteKind.misc, SpriteKind.Enemy, function (sprite, otherSprite) {
@@ -335,6 +358,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLight4, function (sp
     maxenem += 1
     DisplayInv()
 })
+let shawppa: Sprite = null
 let enemy1: Sprite = null
 let traps_hit = 0
 let level = 0
@@ -344,7 +368,9 @@ let item_pickup: Sprite = null
 let luck = 0
 let ice: Sprite = null
 let fire: Sprite = null
-let item_ID: number[] = []
+let temp = 0
+let RandomGoodbyes: string[] = []
+let RandomGreetings: string[] = []
 let item_sprite: Image[] = []
 let item2: Sprite = null
 let item1: Sprite = null
@@ -434,7 +460,7 @@ assets.image`myImage0`,
 assets.image`myImage4`,
 assets.image`myImage1`
 ]
-item_ID = [
+let item_ID = [
 0,
 1,
 2,
