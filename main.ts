@@ -4,6 +4,7 @@ namespace SpriteKind {
     export const ice = SpriteKind.create()
     export const misc = SpriteKind.create()
     export const shop = SpriteKind.create()
+    export const youreawful = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -26,6 +27,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.shop, function (sprite, otherSpr
     } else {
         game.showLongText("please my rent is due tomorrow", DialogLayout.Bottom)
     }
+    luck += 1
     game.showLongText(RandomGoodbyes._pickRandom(), DialogLayout.Bottom)
     DisplayInv()
     otherSprite.destroy(effects.smiles, 1000)
@@ -95,6 +97,10 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     } else if (inventory[1] == 1) {
         inventory.removeAt(1)
         luck += 1
+    } else if (inventory[1] == 6) {
+        inventory.removeAt(1)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Enemy, effects.ashes, 500)
+        sprites.destroyAllSpritesOfKind(SpriteKind.shop, effects.ashes, 500)
     } else {
         inventory.removeAt(1)
     }
@@ -173,6 +179,10 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     } else if (inventory[0] == 1) {
         inventory.removeAt(0)
         luck += 1
+    } else if (inventory[0] == 6) {
+        inventory.removeAt(0)
+        sprites.destroyAllSpritesOfKind(SpriteKind.Enemy, effects.ashes, 500)
+        sprites.destroyAllSpritesOfKind(SpriteKind.shop, effects.ashes, 500)
     } else {
         inventory.removeAt(0)
     }
@@ -278,9 +288,24 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     false
     )
 })
+sprites.onOverlap(SpriteKind.fire, SpriteKind.shop, function (sprite, otherSprite) {
+    otherSprite.setImage(assets.image`shopkeep_man_death`)
+    game.showLongText("not a fan of dying to be honest", DialogLayout.Bottom)
+    otherSprite.destroy(effects.fire, 1000)
+    luck = 0
+    maxenem = 50
+    vitality = 0
+    deathorb = sprites.create(assets.image`death_orb`, SpriteKind.youreawful)
+    deathorb.setPosition(otherSprite.x, otherSprite.y)
+})
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.tileDarkGrass2, function (sprite, location) {
     vitality += 1
     tiles.setTileAt(location, sprites.castle.tileDarkGrass3)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.youreawful, function (sprite, otherSprite) {
+    inventory.push(6)
+    otherSprite.destroy()
+    DisplayInv()
 })
 info.onLifeZero(function () {
     let floor = 0
@@ -363,11 +388,12 @@ let enemy1: Sprite = null
 let traps_hit = 0
 let level = 0
 let item_bonus = 0
+let deathorb: Sprite = null
 let enemies_killed = 0
 let item_pickup: Sprite = null
-let luck = 0
 let ice: Sprite = null
 let fire: Sprite = null
+let luck = 0
 let temp = 0
 let RandomGoodbyes: string[] = []
 let RandomGreetings: string[] = []
@@ -458,7 +484,8 @@ assets.image`myImage2`,
 assets.image`shield`,
 assets.image`myImage0`,
 assets.image`myImage4`,
-assets.image`myImage1`
+assets.image`myImage1`,
+assets.image`death_orb`
 ]
 let item_ID = [
 0,
@@ -466,6 +493,7 @@ let item_ID = [
 2,
 3,
 4,
-5
+5,
+6
 ]
 DisplayInv()
