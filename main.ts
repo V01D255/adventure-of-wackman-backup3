@@ -75,9 +75,8 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
         inventory.removeAt(1)
         wackman.startEffect(effects.blizzard, 500)
     } else if (inventory[1] == 1) {
-        item_pickup = sprites.create(assets.image`myImage2`, SpriteKind.misc)
-        item_pickup.setVelocity(50, 50)
-        item_pickup.setBounceOnWall(true)
+        inventory.removeAt(1)
+        luck += 1
     } else {
         inventory.removeAt(1)
     }
@@ -154,9 +153,8 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         inventory.removeAt(0)
         wackman.startEffect(effects.blizzard, 500)
     } else if (inventory[0] == 1) {
-        item_pickup = sprites.create(assets.image`myImage2`, SpriteKind.misc)
-        item_pickup.setVelocity(50, 50)
-        item_pickup.setBounceOnWall(true)
+        inventory.removeAt(0)
+        luck += 1
     } else {
         inventory.removeAt(0)
     }
@@ -338,6 +336,7 @@ let level = 0
 let item_bonus = 0
 let enemies_killed = 0
 let item_pickup: Sprite = null
+let luck = 0
 let ice: Sprite = null
 let fire: Sprite = null
 let item_ID: number[] = []
