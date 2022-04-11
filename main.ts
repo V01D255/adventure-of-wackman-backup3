@@ -12,6 +12,77 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     false
     )
 })
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (inventory[1] == 5) {
+        speed += 25
+        inventory.removeAt(1)
+    } else if (inventory[1] == 3) {
+        wackman.startEffect(effects.fire, 1000)
+        wackman.startEffect(effects.warmRadial, 2000)
+        for (let index = 0; index < 10; index++) {
+            fire = sprites.createProjectileFromSprite(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . 4 4 . . . . . . . 
+                . . . . . . 4 5 5 4 . . . . . . 
+                . . . . . . 2 5 5 2 . . . . . . 
+                . . . . . . . 2 2 . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, wackman, randint(-30, 30), randint(-30, 30))
+            fire.setKind(SpriteKind.fire)
+        }
+        maxenem += 1
+        inventory.removeAt(1)
+    } else if (inventory[1] == 4) {
+        info.changeLifeBy(1)
+        inventory.removeAt(1)
+    } else if (inventory[1] == 0) {
+        wackman.startEffect(effects.fountain, 1000)
+        wackman.startEffect(effects.coolRadial, 2000)
+        for (let index = 0; index < 10; index++) {
+            ice = sprites.createProjectileFromSprite(img`
+                . . . . . . . . . . . . . . . . 
+                . . . . . . 6 6 6 6 . . . . . . 
+                . . . . 6 6 6 5 5 6 6 6 . . . . 
+                . . . 7 7 7 7 6 6 6 6 6 6 . . . 
+                . . 6 7 7 7 7 8 8 8 1 1 6 6 . . 
+                . . 7 7 7 7 7 8 8 8 1 1 5 6 . . 
+                . 6 7 7 7 7 8 8 8 8 8 5 5 6 6 . 
+                . 6 7 7 7 8 8 8 6 6 6 6 5 6 6 . 
+                . 6 6 7 7 8 8 6 6 6 6 6 6 6 6 . 
+                . 6 8 7 7 8 8 6 6 6 6 6 6 6 6 . 
+                . . 6 8 7 7 8 6 6 6 6 6 8 6 . . 
+                . . 6 8 8 7 8 8 6 6 6 8 6 6 . . 
+                . . . 6 8 8 8 8 8 8 8 8 6 . . . 
+                . . . . 6 6 8 8 8 8 6 6 . . . . 
+                . . . . . . 6 6 6 6 . . . . . . 
+                . . . . . . . . . . . . . . . . 
+                `, wackman, randint(-10, 10), randint(-10, 10))
+            ice.setKind(SpriteKind.ice)
+        }
+        inventory.removeAt(1)
+    } else if (inventory[1] == 2) {
+        maxenem += -3
+        inventory.removeAt(1)
+        wackman.startEffect(effects.blizzard, 500)
+    } else if (inventory[1] == 1) {
+        item_pickup = sprites.create(assets.image`myImage2`, SpriteKind.misc)
+        item_pickup.setVelocity(50, 50)
+        item_pickup.setBounceOnWall(true)
+    } else {
+        inventory.removeAt(1)
+    }
+    DisplayInv()
+})
 sprites.onOverlap(SpriteKind.fire, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.vx += -30
     otherSprite.vy += -30
@@ -89,6 +160,17 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     } else {
         inventory.removeAt(0)
     }
+    DisplayInv()
+})
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    animation.runImageAnimation(
+    wackman,
+    player_animations[1],
+    350,
+    false
+    )
+})
+function DisplayInv () {
     if (inventory.length == 0) {
         item1.setImage(img`
             . . . . . . . . . . . . . . . . 
@@ -149,20 +231,11 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         item1.setImage(item_sprite[inventory[0]])
         item2.setImage(item_sprite[inventory[1]])
     }
-})
-controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
-    animation.runImageAnimation(
-    wackman,
-    player_animations[1],
-    350,
-    false
-    )
-})
+}
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestClosed, function (sprite, location) {
     tiles.setTileAt(location, sprites.dungeon.floorLight0)
     inventory.push(item_ID._pickRandom())
-    item1.setImage(item_sprite[inventory[0]])
-    item2.setImage(item_sprite[inventory[1]])
+    DisplayInv()
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -214,8 +287,7 @@ info.onLifeZero(function () {
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
     inventory.push(4)
     otherSprite.destroy()
-    item1.setImage(item_sprite[inventory[0]])
-    item2.setImage(item_sprite[inventory[1]])
+    DisplayInv()
 })
 function new_room (EnemiesNum: number) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
@@ -259,15 +331,16 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLight4, function (sp
     tiles.setTileAt(location, sprites.dungeon.floorLight3)
     traps_hit += 1
     maxenem += 1
+    DisplayInv()
 })
 let enemy1: Sprite = null
 let traps_hit = 0
 let level = 0
 let item_bonus = 0
-let ice: Sprite = null
-let fire: Sprite = null
 let enemies_killed = 0
 let item_pickup: Sprite = null
+let ice: Sprite = null
+let fire: Sprite = null
 let item_ID: number[] = []
 let item_sprite: Image[] = []
 let item2: Sprite = null
@@ -364,5 +437,4 @@ item_ID = [
 4,
 5
 ]
-item1.setImage(item_sprite[inventory[0]])
-item2.setImage(item_sprite[inventory[1]])
+DisplayInv()
