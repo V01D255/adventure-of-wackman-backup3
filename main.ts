@@ -260,6 +260,10 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     false
     )
 })
+scene.onOverlapTile(SpriteKind.Player, sprites.castle.tileDarkGrass2, function (sprite, location) {
+    vitality += 1
+    tiles.setTileAt(location, sprites.castle.tileDarkGrass3)
+})
 info.onLifeZero(function () {
     let floor = 0
     item_bonus = inventory.length * 10
@@ -279,6 +283,7 @@ info.onLifeZero(function () {
     for (let index = 0; index < enemies_killed * 1; index++) {
         info.changeScoreBy(-5)
     }
+    game.splash("What a totally fair death!")
     game.over(false)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {

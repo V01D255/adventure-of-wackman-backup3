@@ -64,6 +64,11 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "shopkeep_man"
     },
+    "image14": {
+        "data": "hwQVABQAAAAAAAAAAADg/09PAAAAAAAAAADgT09PAABAAAAAAADgT/9PAABABADgAADg5EROAAAARADgAgDg//9PAAAAQAAgAgDg9ETuAAAAAgAgAgIi8v//AAAAIgAvLwIi4kTkAAAAICLyIiLi9P//AAAAACIvLyLiT+/kAAAABCIiIiLi/v//AABEBCLy8iLiTu5EAAAAACIiLyLi//9PAAAAICLy8iLi5E70AAAAIgAAACDi///vAAAAAgAgIiLiTkT+AAAAAEAAIiLi//9PAAAAAEQAICLiTuREAAAAQAAAAADg////AAAAAAAAAADgT0/kAAAAAAAAAADg/k9EAAA=",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "shopkeep_man_death"
+    },
     "anim5": {
         "namespace": "myAnimations",
         "id": "anim5",
