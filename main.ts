@@ -414,7 +414,8 @@ tilemap`level4`,
 tilemap`level7`,
 tilemap`level10`,
 tilemap`level12`,
-tilemap`ruins_garden1`
+tilemap`ruins_garden1`,
+tilemap`garden_1`
 ]
 player_animations = [
 assets.animation`wacky boy forward`,
