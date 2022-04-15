@@ -6,6 +6,8 @@ namespace SpriteKind {
     export const shop = SpriteKind.create()
     export const youreawful = SpriteKind.create()
     export const bomb = SpriteKind.create()
+    export const boss = SpriteKind.create()
+    export const evil = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -402,8 +404,17 @@ function new_room (EnemiesNum: number, BossRoom: boolean) {
     if (BossRoom) {
         if (FOXBANE_route) {
             tiles.setCurrentTilemap(tilemap`room_of_the_damned1`)
+            BossHP = 60
+            Boss = sprites.create(assets.image`god_of_torment`, SpriteKind.evil)
+        } else if (Math.percentChance(60)) {
+            tiles.setCurrentTilemap(tilemap`monarch_hall1`)
+            BossHP = 20
+            Boss = sprites.create(assets.image`slime_king`, SpriteKind.boss)
+            Boss.follow(wackman, 10)
         } else {
-        	
+            tiles.setCurrentTilemap(tilemap`monarch_hall1`)
+            Boss = sprites.create(assets.image`wasp_queen`, SpriteKind.boss)
+            BossHP = 30
         }
     } else {
         tiles.setCurrentTilemap(areas._pickRandom())
@@ -459,6 +470,8 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLight4, function (sp
 })
 let shawppa: Sprite = null
 let enemy1: Sprite = null
+let Boss: Sprite = null
+let BossHP = 0
 let traps_hit = 0
 let level = 0
 let item_bonus = 0
