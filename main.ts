@@ -16,8 +16,20 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.shop, function (sprite, otherSprite) {
-    RandomGreetings = ["hey yeah yeah welcome to shawppa shawp", "yeah give me heart", "yyeaahhh"]
-    RandomGoodbyes = ["give haerts for the best EVER", "always welcome back", "give more hearts for good luck everytime"]
+    RandomGreetings = [
+    "hey yeah yeah welcome to shawppa shawp",
+    "yeah give me heart",
+    "yyeaahhh",
+    "today i have for you a selection of SEVERAL"
+    ]
+    RandomGoodbyes = [
+    "give haerts for the best EVER",
+    "always welcome back",
+    "give more hearts for good luck everytime",
+    "thankyou thanks",
+    "It is never enough.",
+    "DOWNLOAD"
+    ]
     game.showLongText(RandomGreetings._pickRandom(), DialogLayout.Bottom)
     if (game.ask("Give Shawppa 1 heart?")) {
         if (Math.percentChance(luck * 5)) {
@@ -232,8 +244,8 @@ sprites.onOverlap(SpriteKind.Enemy, SpriteKind.bomb, function (sprite, otherSpri
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
-            `, wackman, randint(-35, 35), randint(-35, 35))
-        ice.setKind(SpriteKind.fire)
+            `, otherSprite, randint(-35, 35), randint(-35, 35))
+        fire.setKind(SpriteKind.fire)
     }
     otherSprite.destroy()
 })
@@ -346,9 +358,10 @@ sprites.onOverlap(SpriteKind.fire, SpriteKind.shop, function (sprite, otherSprit
     vitality = 0
     deathorb = sprites.create(assets.image`death_orb`, SpriteKind.youreawful)
     deathorb.setPosition(otherSprite.x, otherSprite.y)
+    FOXBANE_route = true
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.castle.tileDarkGrass2, function (sprite, location) {
-    vitality += 1
+    luck += 1
     tiles.setTileAt(location, sprites.castle.tileDarkGrass3)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.youreawful, function (sprite, otherSprite) {
@@ -383,29 +396,37 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSpr
     otherSprite.destroy()
     DisplayInv()
 })
-function new_room (EnemiesNum: number) {
+function new_room (EnemiesNum: number, BossRoom: boolean) {
     sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
     sprites.destroyAllSpritesOfKind(SpriteKind.shop)
-    tiles.setCurrentTilemap(areas._pickRandom())
-    tiles.placeOnRandomTile(wackman, sprites.dungeon.collectibleInsignia)
-    for (let index = 0; index < EnemiesNum; index++) {
-        if (Math.percentChance(70)) {
-            enemy1 = sprites.create(assets.image`blorb`, SpriteKind.Enemy)
-            enemy1.setBounceOnWall(true)
-            enemy1.vx = randint(-50, 50)
-            enemy1.vy = randint(-50, 50)
+    if (BossRoom) {
+        if (FOXBANE_route) {
+            tiles.setCurrentTilemap(tilemap`room_of_the_damned1`)
         } else {
-            enemy1 = sprites.create(assets.image`vexfly`, SpriteKind.Enemy)
-            enemy1.follow(wackman)
+        	
+        }
+    } else {
+        tiles.setCurrentTilemap(areas._pickRandom())
+        tiles.placeOnRandomTile(wackman, sprites.dungeon.collectibleInsignia)
+        for (let index = 0; index < EnemiesNum; index++) {
+            if (Math.percentChance(70)) {
+                enemy1 = sprites.create(assets.image`blorb`, SpriteKind.Enemy)
+                enemy1.setBounceOnWall(true)
+                enemy1.vx = randint(-50, 50)
+                enemy1.vy = randint(-50, 50)
+            } else {
+                enemy1 = sprites.create(assets.image`vexfly`, SpriteKind.Enemy)
+                enemy1.follow(wackman)
+            }
             tiles.placeOnRandomTile(enemy1, assets.tile`enemy`)
         }
-    }
-    for (let value of tiles.getTilesByType(assets.tile`enemy`)) {
-        tiles.setTileAt(value, sprites.dungeon.floorLight0)
-    }
-    for (let value of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
-        shawppa = sprites.create(assets.image`shopkeep_man`, SpriteKind.shop)
-        tiles.placeOnTile(shawppa, value)
+        for (let value of tiles.getTilesByType(assets.tile`enemy`)) {
+            tiles.setTileAt(value, sprites.dungeon.floorLight0)
+        }
+        for (let value of tiles.getTilesByType(sprites.dungeon.floorDarkDiamond)) {
+            shawppa = sprites.create(assets.image`shopkeep_man`, SpriteKind.shop)
+            tiles.placeOnTile(shawppa, value)
+        }
     }
 }
 sprites.onOverlap(SpriteKind.misc, SpriteKind.Enemy, function (sprite, otherSprite) {
@@ -417,7 +438,11 @@ sprites.onOverlap(SpriteKind.misc, SpriteKind.Enemy, function (sprite, otherSpri
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.stairLarge, function (sprite, location) {
     level += 1
-    new_room(randint(4, maxenem))
+    if (level > 9) {
+        new_room(maxenem, true)
+    } else {
+        new_room(randint(4, maxenem), false)
+    }
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLight4, function (sprite, location) {
     if (Math.percentChance(30)) {
@@ -437,6 +462,7 @@ let enemy1: Sprite = null
 let traps_hit = 0
 let level = 0
 let item_bonus = 0
+let FOXBANE_route = false
 let deathorb: Sprite = null
 let enemies_killed = 0
 let item_pickup: Sprite = null
@@ -482,7 +508,7 @@ vitality = 1
 controller.moveSprite(wackman, 50, 50)
 scene.cameraFollowSprite(wackman)
 info.setLife(3)
-new_room(5)
+new_room(5, false)
 maxenem = 6
 let inv1 = sprites.create(assets.image`inv1`, SpriteKind.GUI)
 let inv2 = sprites.create(assets.image`inv0`, SpriteKind.GUI)
