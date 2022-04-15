@@ -6,6 +6,9 @@ namespace SpriteKind {
     export const shop = SpriteKind.create()
     export const youreawful = SpriteKind.create()
     export const bomb = SpriteKind.create()
+    export const SlimeKing = SpriteKind.create()
+    export const WaspQueen = SpriteKind.create()
+    export const Demon = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -33,7 +36,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.shop, function (sprite, otherSpr
     game.showLongText(RandomGreetings._pickRandom(), DialogLayout.Bottom)
     if (game.ask("Give Shawppa 1 heart?")) {
         if (Math.percentChance(luck * 5)) {
-            temp = randint(6, 8)
+            temp = randint(7, 8)
         } else {
             temp = randint(0, 5)
         }
@@ -391,6 +394,15 @@ info.onLifeZero(function () {
     game.splash("What a totally fair death!")
     game.over(false)
 })
+// testing purposes do not use
+controller.player2.onButtonEvent(ControllerButton.Left, ControllerButtonEvent.Pressed, function () {
+    inventory.unshift(6)
+    inventory.unshift(7)
+    info.setLife(50)
+    vitality = 1000
+    DisplayInv()
+    game.splash("God mode activated", "Proud of yourself, cheater?")
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
     inventory.push(4)
     otherSprite.destroy()
@@ -402,8 +414,16 @@ function new_room (EnemiesNum: number, BossRoom: boolean) {
     if (BossRoom) {
         if (FOXBANE_route) {
             tiles.setCurrentTilemap(tilemap`room_of_the_damned1`)
+            Boss = sprites.create(assets.image`god_of_torment`, SpriteKind.Demon)
+            tiles.placeOnRandomTile(Boss, sprites.dungeon.hazardLava1)
         } else {
-        	
+            tiles.setCurrentTilemap(tilemap`monarch_hall1`)
+            if (Math.percentChance(50)) {
+                Boss = sprites.create(assets.image`slime_king`, SpriteKind.SlimeKing)
+            } else {
+                Boss = sprites.create(assets.image`wasp_queen`, SpriteKind.WaspQueen)
+            }
+            tiles.placeOnRandomTile(Boss, sprites.dungeon.floorLight0)
         }
     } else {
         tiles.setCurrentTilemap(areas._pickRandom())
@@ -459,6 +479,7 @@ scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.floorLight4, function (sp
 })
 let shawppa: Sprite = null
 let enemy1: Sprite = null
+let Boss: Sprite = null
 let traps_hit = 0
 let level = 0
 let item_bonus = 0
